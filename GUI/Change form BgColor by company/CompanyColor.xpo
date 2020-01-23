@@ -1,0 +1,710 @@
+﻿Exportfile for AOT version 1.0 or later
+Formatversion: 1
+
+***Element: DBT
+
+; Microsoft Dynamics AX Table : CeCompanyColor unloaded
+; --------------------------------------------------------------------------------
+  TABLEVERSION 1
+  
+  TABLE #CeCompanyColor
+    PROPERTIES
+      Name                #CeCompanyColor
+      TitleField1         #CompanyId
+      TitleField2         #Active
+      SecurityKey         #AdminSetup
+      CacheLookup         #EntireTable
+      SaveDataPerCompany  #No
+      ClusterIndex        #CompanyIdIdx
+    ENDPROPERTIES
+    
+    FIELDS
+      FIELD #CompanyId
+        STRING
+        PROPERTIES
+          Name                #CompanyId
+          Table               #CeCompanyColor
+          ExtendedDataType    
+            ARRAY 
+              #dataAreaId
+              #
+            ENDARRAY
+          StringSize          #4
+        ENDPROPERTIES
+        
+      FIELD #Active
+        ENUM
+        PROPERTIES
+          Name                #Active
+          Label               #@SYS70338
+          Table               #CeCompanyColor
+          ExtendedDataType    
+            ARRAY 
+              #NoYesId
+              #
+            ENDARRAY
+          EnumType            #NoYes
+        ENDPROPERTIES
+        
+      FIELD #RGBintR
+        INT
+        PROPERTIES
+          Name                #RGBintR
+          Table               #CeCompanyColor
+          ExtendedDataType    
+            ARRAY 
+              #RGBintR
+              #
+            ENDARRAY
+        ENDPROPERTIES
+        
+      FIELD #RGBintG
+        INT
+        PROPERTIES
+          Name                #RGBintG
+          Table               #CeCompanyColor
+          ExtendedDataType    
+            ARRAY 
+              #RGBintG
+              #
+            ENDARRAY
+        ENDPROPERTIES
+        
+      FIELD #RGBintB
+        INT
+        PROPERTIES
+          Name                #RGBintB
+          Table               #CeCompanyColor
+          ExtendedDataType    
+            ARRAY 
+              #RGBintB
+              #
+            ENDARRAY
+        ENDPROPERTIES
+        
+    ENDFIELDS
+    GROUPS
+    ENDGROUPS
+    
+    INDICES
+      #CompanyIdIdx
+      PROPERTIES
+        Name                #CompanyIdIdx
+      ENDPROPERTIES
+      
+      INDEXFIELDS
+        #CompanyId
+      ENDINDEXFIELDS
+      
+    ENDINDICES
+    REFERENCES
+    ENDREFERENCES
+    
+    DELETEACTIONS
+    ENDDELETEACTIONS
+    
+    METHODS
+      Version: 3
+      SOURCE #getColor
+        #public static int getColor(DataAreaId _dataAreaId = curext())
+        #{
+        #    CeCompanyColor  ceCompanyColor;
+        #    ;
+        #
+        #    select firstonly ceCompanyColor
+        #        where ceCompanyColor.CompanyId  == _dataAreaId;
+        #
+        #    return WinApi::rgb2int(ceCompanyColor.RGBintR,ceCompanyColor.RGBintG,ceCompanyColor.RGBintB);
+        #}
+      ENDSOURCE
+      SOURCE #isActive
+        #public static boolean isActive(DataAreaId _dataAreaId = curext())
+        #{
+        #    CeCompanyColor  ceCompanyColor;
+        #    ;
+        #
+        #    select firstonly Active from ceCompanyColor
+        #        where ceCompanyColor.CompanyId  == _dataAreaId;
+        #
+        #    return ceCompanyColor.Active;
+        #}
+      ENDSOURCE
+    ENDMETHODS
+  ENDTABLE
+  
+
+***Element: CLS
+
+; Microsoft Dynamics AX Class: SysSetupFormRun flutt út
+; --------------------------------------------------------------------------------
+  CLSVERSION 1
+  
+  CLASS #SysSetupFormRun
+    PROPERTIES
+      Name                #SysSetupFormRun
+      Extends             #FormRun
+      RunOn               #Client
+    ENDPROPERTIES
+    
+    METHODS
+      Version: 3
+      SOURCE #classDeclaration
+        #// This is a framework class. Customizing this class may cause problems with future upgrades to the software.
+        #public class SysSetupFormRun extends FormRun
+        #{
+        ##if.never
+        #    #define.CurrentVersion(1)
+        #    #localmacro.CurrentList
+        #    #endmacro
+        ##endif
+        #    SysWorkflowFormControls     workflowControls;
+        #}
+      ENDSOURCE
+      SOURCE #dimensionFieldCtrls
+        #protected void dimensionFieldCtrls()
+        #{
+        #    int i = this.dataSourceCount();
+        #    ;
+        #    while (i)
+        #    {
+        #        DimensionFieldCtrl::newFormDataSource(this.dataSource(i)).dataSourceInit();
+        #        i--;
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #docCursor
+        #Common docCursor()
+        #{
+        #    if (infolog.docuHandlingActive())
+        #    {
+        #        return super();
+        #    }
+        #    else
+        #    {
+        #        return null;
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #getActiveWorkflowConfiguration
+        #public Common getActiveWorkflowConfiguration()
+        #{
+        #    Common workflowConfiguration;
+        #
+        #    if (workflowControls)
+        #        workflowConfiguration = workflowControls.getActiveWorkflowConfiguration();
+        #
+        #    return workflowConfiguration;
+        #}
+      ENDSOURCE
+      SOURCE #getActiveWorkflowTrackingStatus
+        #public Common getActiveWorkflowTrackingStatus()
+        #{
+        #    Common trackingStatusTable;
+        #
+        #    if (workflowControls)
+        #        trackingStatusTable = workflowControls.getActiveWorkflowTrackingStatus();
+        #
+        #    return trackingStatusTable;
+        #}
+      ENDSOURCE
+      SOURCE #getActiveWorkflowWorkItem
+        #public Common getActiveWorkflowWorkItem()
+        #{
+        #    Common workItem;
+        #
+        #    if (workflowControls)
+        #        workItem = workflowControls.getActiveWorkflowWorkItem();
+        #
+        #    return workItem;
+        #}
+      ENDSOURCE
+      SOURCE #init
+        #public void init()
+        #{
+        #    super();
+        #    SysSecurityFormSetup::loadSecurity(this);
+        #    this.dimensionFieldCtrls();
+        #    this.inventStorageDimFieldCtrls();
+
+        #    if (this.isWorkflowEnabled())
+        #    {
+        #        workflowControls = SysWorkflowFormControls::construct(this);
+        #        workflowControls.initControls();
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #inventStorageDimFieldCtrls
+        #protected void inventStorageDimFieldCtrls()
+        #{
+        #    int i;
+        #    ;
+        #    i = this.dataSourceCount();
+        #    while (i)
+        #    {
+        #        InventStorageDimWithoutItemCtrl::newFormDataSource(this.dataSource(i)).dataSourceInit();
+        #        i--;
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #loadUserSetting
+        #public void loadUserSetting()
+        #{
+        #    SysSaveSetup    sysSaveSetup;
+        #    super();
+        #
+        #    sysSaveSetup = SysSaveSetup::construct(this);
+        #    sysSaveSetup.loadFormSetup();
+        #}
+      ENDSOURCE
+      SOURCE #loadWorkflowConfiguration
+        #public Common loadWorkflowConfiguration()
+        #{
+        #    Common ret;
+        #
+        #    ret = super();
+        #
+        #    if (ret.RecId == 0)
+        #    {
+        #        if (this.isWorkflowEnabled() && workflowControls != null)
+        #            ret = Workflow::findWorkflowConfigurationToActivate(workflowControls.getWorkflowDocumentTable());
+        #    }
+        #
+        #    return ret;
+        #}
+      ENDSOURCE
+      SOURCE #run
+        #public void run()
+        #{
+        #    ;
+        #
+        #    super();
+        #
+        #    if(curuserid() == 'admin' && CeCompanyColor::isActive())
+        #    {
+        #        this.design().colorScheme(FormColorScheme::RGB);
+        #        this.design().backgroundColor(CeCompanyColor::getColor());
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #saveUserSetting
+        #public void saveUserSetting()
+        #{
+        #    SysSaveSetup    sysSaveSetup = SysSaveSetup::construct(this);
+        #    ;
+        #    sysSaveSetup.saveFormSetup();
+        #    super();
+        #}
+      ENDSOURCE
+      SOURCE #task
+        #public int task(int _p1)
+        #{
+        #    #task
+        #    FormDataSource formDataSource;
+        #
+        #    int ret;
+        #
+        #    if (_p1 == #taskFilter)
+        #    {
+        #        formDataSource = this.objectSet();
+        #        if (formDataSource &&
+        #            formDataSource.queryRun() &&
+        #            formDataSource.queryRun().args() &&
+        #            !formDataSource.queryRun().args().caller())
+        #        {
+        #            formDataSource.queryRun().args().caller(this);
+        #        }
+        #    }
+        #
+        #    ret = super(_p1);
+        #
+        #    return ret;
+        #}
+      ENDSOURCE
+      SOURCE #updateWorkflowControls
+        #public void updateWorkflowControls()
+        #{
+        #    if (workflowControls)
+        #        workflowControls.updateControls();
+        #}
+      ENDSOURCE
+    ENDMETHODS
+  ENDCLASS
+
+***Element: FRM
+
+; Microsoft Dynamics AX Forms unloaded
+; --------------------------------------------------------------------------------
+FRMVERSION 5
+
+FORM #CeCompanyColor
+  PROPERTIES
+    Name                #CeCompanyColor
+  ENDPROPERTIES
+  
+  METHODS
+    Version: 3
+    SOURCE #redrawColor
+      #void redrawColor()
+      #{
+      #    ;
+      #    SampleColor.backgroundColor(Winapi::rgb2int(R.value(),G.value(),B.value()));
+      #    element.redraw();
+      #}
+    ENDSOURCE
+    SOURCE #classDeclaration
+      #public class FormRun extends ObjectRun
+      #{
+      #}
+    ENDSOURCE
+  ENDMETHODS
+  OBJECTBANK
+    PROPERTIES
+    ENDPROPERTIES
+    
+    DATASOURCE
+      OBJECTPOOL
+        PROPERTIES
+          Name                #CeCompanyColor
+          Table               #CeCompanyColor
+        ENDPROPERTIES
+        
+        FIELDLIST
+          DATAFIELD CompanyId
+            PROPERTIES
+              AllowEdit           #No
+            ENDPROPERTIES
+            
+          ENDDATAFIELD
+          
+        ENDFIELDLIST
+      ENDOBJECTPOOL
+      METHODS
+        Version: 3
+        SOURCE #active
+          #public int active()
+          #{
+          #    int ret;
+          #
+          #    ret = super();
+          #
+          #    element.redrawColor();
+          #
+          #    return ret;
+          #}
+        ENDSOURCE
+      ENDMETHODS
+    ENDDATASOURCE
+  ENDOBJECTBANK
+  
+  JOINS
+  ENDJOINS
+  
+  DESIGN
+    PROPERTIES
+      Columns             #2
+      ArrangeGuide        
+        ARRAY INDEX Columns 
+          #0
+          #0
+        ENDARRAY
+    ENDPROPERTIES
+    
+    CONTAINER
+      CONTROL GROUP
+        PROPERTIES
+          Name                #Group
+        ENDPROPERTIES
+        
+          CONTAINER
+            CONTROL STRINGEDIT
+              PROPERTIES
+                Name                #CeCompanyColor_CompanyId
+                DataSource          #CeCompanyColor
+                DataField           #CompanyId
+              ENDPROPERTIES
+              
+            ENDCONTROL 
+            
+            CONTROL CHECKBOX
+              PROPERTIES
+                Name                #CeCompanyColor_Active
+                DataSource          #CeCompanyColor
+                DataField           #Active
+              ENDPROPERTIES
+              
+            ENDCONTROL 
+            
+            CONTROL INTEDIT
+              PROPERTIES
+                Name                #R
+                AutoDeclaration     #Yes
+                DataSource          #CeCompanyColor
+                DataField           #RGBintR
+              ENDPROPERTIES
+              
+              METHODS
+                Version: 3
+                SOURCE #modified
+                  #public boolean modified()
+                  #{
+                  #    boolean ret;
+                  #
+                  #    ret = super();
+                  #
+                  #    element.redrawColor();
+                  #
+                  #    return ret;
+                  #}
+                ENDSOURCE
+                SOURCE #validate
+                  #public boolean validate()
+                  #{
+                  #    boolean ret;
+                  #
+                  #    ret = super();
+                  #
+                  #    if(this.value() < 0 || this.value() > 255)
+                  #    {
+                  #        ret = checkfailed('Value must be between 0 and 255');
+                  #    }
+                  #
+                  #    return ret;
+                  #}
+                ENDSOURCE
+              ENDMETHODS
+            ENDCONTROL 
+            
+            CONTROL INTEDIT
+              PROPERTIES
+                Name                #G
+                AutoDeclaration     #Yes
+                DataSource          #CeCompanyColor
+                DataField           #RGBintG
+              ENDPROPERTIES
+              
+              METHODS
+                Version: 3
+                SOURCE #modified
+                  #public boolean modified()
+                  #{
+                  #    boolean ret;
+                  #
+                  #    ret = super();
+                  #
+                  #    element.redrawColor();
+                  #
+                  #    return ret;
+                  #}
+                ENDSOURCE
+                SOURCE #validate
+                  #public boolean validate()
+                  #{
+                  #    boolean ret;
+                  #
+                  #    ret = super();
+                  #
+                  #    if(this.value() < 0 || this.value() > 255)
+                  #    {
+                  #        ret = checkfailed('Value must be between 0 and 255');
+                  #    }
+                  #
+                  #    return ret;
+                  #}
+                ENDSOURCE
+              ENDMETHODS
+            ENDCONTROL 
+            
+            CONTROL INTEDIT
+              PROPERTIES
+                Name                #B
+                AutoDeclaration     #Yes
+                DataSource          #CeCompanyColor
+                DataField           #RGBintB
+              ENDPROPERTIES
+              
+              METHODS
+                Version: 3
+                SOURCE #modified
+                  #public boolean modified()
+                  #{
+                  #    boolean ret;
+                  #
+                  #    ret = super();
+                  #
+                  #    element.redrawColor();
+                  #
+                  #    return ret;
+                  #}
+                ENDSOURCE
+                SOURCE #validate
+                  #public boolean validate()
+                  #{
+                  #    boolean ret;
+                  #
+                  #    ret = super();
+                  #
+                  #    if(this.value() < 0 || this.value() > 255)
+                  #    {
+                  #        ret = checkfailed('Value must be between 0 and 255');
+                  #    }
+                  #
+                  #    return ret;
+                  #}
+                ENDSOURCE
+              ENDMETHODS
+            ENDCONTROL 
+            
+          ENDCONTAINER
+          
+      ENDCONTROL 
+      
+      CONTROL GROUP
+        PROPERTIES
+          Name                #Group1
+        ENDPROPERTIES
+        
+          CONTAINER
+            CONTROL LISTBOX
+              PROPERTIES
+                Name                #SampleColor
+                AutoDeclaration     #Yes
+                Width               #150
+                Height              #150
+                ColorScheme         #RGB
+              ENDPROPERTIES
+              
+            ENDCONTROL 
+            
+          ENDCONTAINER
+          
+      ENDCONTROL 
+      
+    ENDCONTAINER
+    
+  ENDDESIGN
+  
+ENDFORM
+
+
+***Element: FTM
+
+; Microsoft Dynamics AX MENUITEM : CeCompanyColor unloaded
+; --------------------------------------------------------------------------------
+  VERSION 1
+  
+  MENUITEM #CeCompanyColor
+    Type: 1
+    PROPERTIES
+      Name                #CeCompanyColor
+      Label               #@SYS30436
+      Object              #CeCompanyColor
+    ENDPROPERTIES
+    
+  ENDMENUITEM
+  
+
+***Element: PRN
+
+; Microsoft Dynamics AX Project : AnVRB_CompanyColor unloaded
+; --------------------------------------------------------------------------------
+  PROJECTVERSION 2
+  
+  PROJECT #AnVRB_CompanyColor
+   SHARED
+  PROPERTIES
+    Name                #AnVRB_CompanyColor
+  ENDPROPERTIES
+  
+    PROJECTCLASS ProjectNode
+    GROUP #DataDictionary
+      PROPERTIES
+        Name                #DataDictionary
+        ProjectGroupType    #DataDictionary
+        GroupMask           #
+        PreventEditProperties #No
+      ENDPROPERTIES
+      
+      GROUP #Tables
+        PROPERTIES
+          Name                #Tables
+          ProjectGroupType    #Tables
+          GroupMask           #
+          PreventEditProperties #No
+        ENDPROPERTIES
+        
+        BEGINNODE
+          FILETYPE 0
+          UTILTYPE 44
+          UTILOBJECTID 50001
+          NODETYPE 204
+          NAME #CeCompanyColor
+        ENDNODE
+        ENDGROUP
+        
+      ENDGROUP
+      
+    GROUP #Classes
+      PROPERTIES
+        Name                #Classes
+        ProjectGroupType    #Classes
+        GroupMask           #
+        PreventEditProperties #No
+      ENDPROPERTIES
+      
+      BEGINNODE
+        FILETYPE 0
+        UTILTYPE 45
+        UTILOBJECTID 643
+        NODETYPE 329
+        NAME #SysSetupFormRun
+      ENDNODE
+      ENDGROUP
+      
+    GROUP #Forms
+      PROPERTIES
+        Name                #Forms
+        ProjectGroupType    #Forms
+        GroupMask           #
+        PreventEditProperties #No
+      ENDPROPERTIES
+      
+      BEGINNODE
+        FILETYPE 0
+        UTILTYPE 11
+        UTILOBJECTID 0
+        NODETYPE 201
+        NAME #CeCompanyColor
+      ENDNODE
+      ENDGROUP
+      
+    GROUP #MenuItems
+      PROPERTIES
+        Name                #MenuItems
+        ProjectGroupType    #MenuItems
+        GroupMask           #
+        PreventEditProperties #No
+      ENDPROPERTIES
+      
+      GROUP #Display
+        PROPERTIES
+          Name                #Display
+          ProjectGroupType    #Display
+          GroupMask           #
+          PreventEditProperties #No
+        ENDPROPERTIES
+        
+        BEGINNODE
+          FILETYPE 0
+          UTILTYPE 1
+          UTILOBJECTID 0
+          NODETYPE 296
+          NAME #CeCompanyColor
+        ENDNODE
+        ENDGROUP
+        
+      ENDGROUP
+      
+  ENDPROJECT
+  
+
+***Element: END

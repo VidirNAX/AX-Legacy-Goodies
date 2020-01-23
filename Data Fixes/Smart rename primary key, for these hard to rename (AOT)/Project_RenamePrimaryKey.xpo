@@ -1,0 +1,1097 @@
+﻿Exportfile for AOT version 1.0 or later
+Formatversion: 1
+
+***Element: DBT
+
+; Microsoft Dynamics AX Table : CeMergeKeyTableWhiteBlackList unloaded
+; --------------------------------------------------------------------------------
+  TABLEVERSION 1
+  
+  TABLE #CeMergeKeyTableWhiteBlackList
+    PROPERTIES
+      Name                #CeMergeKeyTableWhiteBlackList
+      Label               #White and Black listed tables
+      TitleField1         #TableName
+      TitleField2         #WhiteBlackList
+    ENDPROPERTIES
+    
+    FIELDS
+      FIELD #TableName
+        STRING
+        PROPERTIES
+          Name                #TableName
+          Table               #CeMergeKeyTableWhiteBlackList
+          ExtendedDataType    
+            ARRAY 
+              #TableName
+              #
+            ENDARRAY
+          StringSize          #40
+        ENDPROPERTIES
+        
+      FIELD #WhiteBlackList
+        ENUM
+        PROPERTIES
+          Name                #WhiteBlackList
+          Table               #CeMergeKeyTableWhiteBlackList
+          EnumType            #WhiteBlackList
+        ENDPROPERTIES
+        
+    ENDFIELDS
+    GROUPS
+      GROUP #AutoReport
+        PROPERTIES
+          Name                #AutoReport
+        ENDPROPERTIES
+        
+        GROUPFIELDS
+          #TableName
+          #WhiteBlackList
+        ENDGROUPFIELDS
+      ENDGROUP
+      GROUP #AutoLookup
+        PROPERTIES
+          Name                #AutoLookup
+        ENDPROPERTIES
+        
+        GROUPFIELDS
+          #TableName
+          #WhiteBlackList
+        ENDGROUPFIELDS
+      ENDGROUP
+      GROUP #General
+        PROPERTIES
+          Name                #General
+          Label               #@SYS35893
+        ENDPROPERTIES
+        
+        GROUPFIELDS
+          #TableName
+          #WhiteBlackList
+        ENDGROUPFIELDS
+      ENDGROUP
+      GROUP #Overview
+        PROPERTIES
+          Name                #Overview
+          Label               #@SYS81042
+        ENDPROPERTIES
+        
+        GROUPFIELDS
+          #TableName
+          #WhiteBlackList
+        ENDGROUPFIELDS
+      ENDGROUP
+    ENDGROUPS
+    
+    INDICES
+      #TableNameIdx
+      PROPERTIES
+        Name                #TableNameIdx
+      ENDPROPERTIES
+      
+      INDEXFIELDS
+        #TableName
+      ENDINDEXFIELDS
+      
+    ENDINDICES
+    REFERENCES
+    ENDREFERENCES
+    
+    DELETEACTIONS
+    ENDDELETEACTIONS
+    
+    METHODS
+      Version: 3
+      SOURCE #Exist
+        #public static boolean Exist(TableName _tableName = '', TableId _tableId = 0)
+        #{
+        #    CeMergeKeyTableWhiteBlackList    tableList;
+        #    ;
+        #
+        #    if(!_tableName && _tableId)
+        #    {
+        #        _tableName = new DictTable(_tableId).name();
+        #    }
+        #    if(_tableName)
+        #    {
+        #        select firstonly tableList
+        #            where tableList.TableName   == _tableName;
+        #    }
+        #
+        #    return tableList.RecId != 0;
+        #}
+      ENDSOURCE
+      SOURCE #Find
+        #public static CeMergeKeyTableWhiteBlackList Find(TableName _tableName = '', TableId _tableId = 0)
+        #{
+        #    CeMergeKeyTableWhiteBlackList    tableList;
+        #    ;
+        #
+        #    if(!_tableName && _tableId)
+        #    {
+        #        _tableName = new DictTable(_tableId).name();
+        #    }
+        #    if(_tableName)
+        #    {
+        #        select firstonly tableList
+        #            where tableList.TableName   == _tableName;
+        #    }
+        #
+        #    return tableList;
+        #}
+      ENDSOURCE
+    ENDMETHODS
+  ENDTABLE
+  
+***Element: DBT
+
+; Microsoft Dynamics AX Table : CeMergeKeyRemovalLog unloaded
+; --------------------------------------------------------------------------------
+  TABLEVERSION 1
+  
+  TABLE #CeMergeKeyRemovalLog
+    PROPERTIES
+      Name                #CeMergeKeyRemovalLog
+      CreatedDateTime     #Yes
+      CreatedBy           #Yes
+    ENDPROPERTIES
+    
+    FIELDS
+      FIELD #Data
+        QUEUE
+        PROPERTIES
+          Name                #Data
+          Table               #CeMergeKeyRemovalLog
+          ExtendedDataType    
+            ARRAY 
+              #Blobdata
+              #
+            ENDARRAY
+        ENDPROPERTIES
+        
+      FIELD #RefTableId
+        INT
+        PROPERTIES
+          Name                #RefTableId
+          Table               #CeMergeKeyRemovalLog
+          ExtendedDataType    
+            ARRAY 
+              #RefTableId
+              #
+            ENDARRAY
+        ENDPROPERTIES
+        
+      FIELD #RefRecId
+        INT64
+        PROPERTIES
+          Name                #RefRecId
+          Table               #CeMergeKeyRemovalLog
+          ExtendedDataType    
+            ARRAY 
+              #RefRecId
+              #
+            ENDARRAY
+        ENDPROPERTIES
+        
+    ENDFIELDS
+    GROUPS
+    ENDGROUPS
+    
+    INDICES
+      #CreateDateTimeUserIdx
+      PROPERTIES
+        Name                #CreateDateTimeUserIdx
+      ENDPROPERTIES
+      
+      INDEXFIELDS
+        #createdDateTime
+        #createdBy
+      ENDINDEXFIELDS
+      
+      #RefTableRefRecIdIdx
+      PROPERTIES
+        Name                #RefTableRefRecIdIdx
+      ENDPROPERTIES
+      
+      INDEXFIELDS
+        #RefTableId
+        #RefRecId
+      ENDINDEXFIELDS
+      
+    ENDINDICES
+    REFERENCES
+    ENDREFERENCES
+    
+    DELETEACTIONS
+    ENDDELETEACTIONS
+    
+    METHODS
+      Version: 3
+      SOURCE #Exist
+        #public static boolean Exist(RefTableId _tableId, RefRecId _recId)
+        #{
+        #    CeMergeKeyRemovalLog    log;
+        #    ;
+        #
+        #    select firstonly log
+        #        where log.RefTableId    == _tableId
+        #           && log.RefRecId      == _recId;
+        #
+        #    return log.RecId != 0;
+        #}
+      ENDSOURCE
+      SOURCE #Find
+        #public static CeMergeKeyRemovalLog Find(RefTableId _tableId, RefRecId _recId, boolean _forupdate = false)
+        #{
+        #    CeMergeKeyRemovalLog    log;
+        #    ;
+        #
+        #    log.selectForUpdate(_forupdate);
+        #
+        #    select firstonly log
+        #        where log.RefTableId    == _tableId
+        #           && log.RefRecId      == _recId;
+        #
+        #    return log;
+        #}
+      ENDSOURCE
+      SOURCE #insertLog
+        #public static void insertLog(Common _data)
+        #{
+        #    CeMergeKeyRemovalLog    log;
+        #    ;
+        #
+        #    log.clear();
+        #    log.initValue();
+        #    log.RefTableId  = _data.TableId;
+        #    log.RefRecId    = _data.RecId;
+        #    log.Data        = [_data];
+        #    log.insert();
+        #}
+      ENDSOURCE
+    ENDMETHODS
+  ENDTABLE
+  
+
+***Element: DBE
+
+; Microsoft Dynamics AX Enumtype : WhiteBlackList unloaded
+; --------------------------------------------------------------------------------
+  ENUMTYPEVERSION 1
+  
+  ENUMTYPE #WhiteBlackList
+    PROPERTIES
+      Name                #WhiteBlackList
+      Label               #White/black listing
+      UseEnumValue        #Yes
+    ENDPROPERTIES
+    
+    TYPEELEMENTS
+      #None
+      PROPERTIES
+        Name                #None
+        Label               #@SYS80100
+        EnumValue           #0
+      ENDPROPERTIES
+      
+      #WhiteListed
+      PROPERTIES
+        Name                #WhiteListed
+        Label               #White
+        EnumValue           #1
+      ENDPROPERTIES
+      
+      #Blacklisted
+      PROPERTIES
+        Name                #Blacklisted
+        Label               #Black
+        EnumValue           #2
+      ENDPROPERTIES
+      
+    ENDTYPEELEMENTS
+  ENDENUMTYPE
+  
+***Element: CLS
+
+; Microsoft Dynamics AX Class: CeMergeKey flutt út
+; --------------------------------------------------------------------------------
+  CLSVERSION 1
+  
+  CLASS #CeMergeKey
+    PROPERTIES
+      Name                #CeMergeKey
+      Extends             #RunBaseBatch
+      RunOn               #Called from
+    ENDPROPERTIES
+    
+    METHODS
+      Version: 3
+      SOURCE #checkAndRemoveFromUniqueIndex
+        #container checkAndRemoveFromUniqueIndex(DictTable _dictTable, DictIndex _dictIndex, dictField _dictField, boolean _checkOnly)
+        #{
+        #    Common                          common_local;
+        #    FieldId                         recIdFieldId = 65534;
+        #    FieldId                         tableIdFieldId = 65535;
+        #    Query                           query   = new Query();
+        #    QueryRun                        queryRun;
+        #    QueryBuildDataSource            qbds,qbds2;
+        #    WhiteBlackList                  whiteBlackList;
+        #    int                             i;
+        #    container                       ret;
+        #    ;
+        #
+        #    qbds    = query.addDataSource(_dictTable.id());
+        #    qbds2   = qbds.addDataSource(_dictTable.id());
+        #    qbds2.relations(false);
+        #    qbds2.joinMode(JoinMode::ExistsJoin);
+        #    qbds2.clearLinks();
+        #    qbds.addRange(_dictField.id()).value(sysQuery::value(this.parmToValue()));
+        #    qbds2.addRange(_dictField.id()).value(sysQuery::value(this.parmFromValue()));
+        #
+        #    for(i=1;i<=_dictIndex.numberOfFields();i++)
+        #    {
+        #        if(_dictIndex.field(i) != _dictField.id())
+        #        {
+        #            qbds2.addLink(_dictIndex.field(i),_dictIndex.field(i));
+        #        }
+        #    }
+        #
+        #    if(_checkOnly)
+        #    {
+        #        qbds.addSelectionField(recIdFieldId,SelectionField::Count);
+        #        queryRun    = new QueryRun(query);
+        #        queryRun.next();
+        #
+        #        common_local    = queryRun.getNo(1);
+        #
+        #        if(common_local.RecId)
+        #        {
+        #            whiteBlackList  = CeMergeKeyTableWhiteBlackList::Find(_dictTable.name()).WhiteBlackList;
+        #            if(whiteBlackList   == WhiteBlackList::Blacklisted)
+        #            {
+        #                blackList = true;
+        #            }
+        #            if(whiteBlackList != WhiteBlackList::WhiteListed)
+        #            {
+        #                whiteListOnly = false;
+        #            }
+        #
+        #            ret = [strfmt('%1 (%2)',_dictTable.label(),_dictTable.name()),_dictIndex.name(),common_local.RecId,whiteBlackList];
+        #        }
+        #    }
+        #    else
+        #    {
+        #        if(blacklist)
+        #        {
+        #            throw error('Attempted record deletion on black listen table!');
+        #        }
+        #
+        #        queryRun    = new QueryRun(query);
+        #        while(queryRun.next())
+        #        {
+        #            common_local = queryRun.getNo(1);
+        #
+        #            CeMergeKeyRemovalLog::insertLog(common_local);
+        #
+        #            common_local.selectForUpdate(true);
+        #            common_local.dodelete();
+        #        }
+        #    }
+        #
+        #    return ret;
+        #}
+      ENDSOURCE
+      SOURCE #checkRemoveData
+        #boolean checkRemoveData(boolean _checkOnly = true)
+        #{
+        #    DictTable       dictTable;
+        #    DictType        dictType;
+        #    DictField       dictField;
+        #    Dictionary      dictionary = new Dictionary();
+        #    TableId         tableId;
+        #    DictIndex       dictIndex;
+        #    IndexId         indexId;
+        #    ExtendedTypeId  extTypeId_local;
+        #    Common          common_local;
+        #    int             i;
+        #    container       conResult, conTmp;
+        #    boolean         ret = true;
+        #    ;
+        #
+        #    tableId = dictionary.tableNext(0);
+        #
+        #    while(tableId)
+        #    {
+        #        if(tableId == common.TableId)
+        #        {
+        #            tableId = dictionary.tableNext(tableId);
+        #            continue;
+        #        }
+        #
+        #        dictTable   = new DictTable(tableId);
+        #        if(!dictTable.isMap() && !dictTable.isView() && !dictTable.isTmp())
+        #        {
+        #            indexId = dictTable.indexNext(0);
+        #
+        #            while(indexId)
+        #            {
+        #                dictIndex   = new DictIndex(dictTable.id(),indexId);
+        #
+        #                if(!dictIndex.allowDuplicates())
+        #                {
+        #                    for(i=1;i<=dictIndex.numberOfFields();i++)
+        #                    {
+        #                        dictField   = new DictField(dictTable.id(),dictIndex.field(i));
+        #                        if(dictField.typeId() == extTypeId)
+        #                        {
+        #                            conTmp      = this.checkAndRemoveFromUniqueIndex(dictTable,dictIndex,dictField,_checkOnly);
+        #                            if(conTmp)
+        #                            {
+        #                                conResult   = conIns(conResult,conlen(conResult) + 1,conTmp);
+        #                            }
+        #                        }
+        #                    }
+        #                }
+        #                indexId = dictTable.indexNext(indexId);
+        #            }
+        #        }
+        #        tableId = dictionary.tableNext(tableId);
+        #    }
+        #
+        #    if(conlen(conResult) && _checkOnly)
+        #    {
+        #        print "Index unique violation (Table Name (System name), Index, Row count, Black/white listed)";
+        #        for(i=1;i<=conlen(conResult);i++)
+        #        {
+        #            print strfmt('%1, %2, %3, %4',
+        #                conpeek(conpeek(conResult,i),1),
+        #                conpeek(conpeek(conResult,i),2),
+        #                conpeek(conpeek(conResult,i),3),
+        #                conpeek(conpeek(conResult,i),4));
+        #        }
+        #        if(blacklist)
+        #        {
+        #            ret = checkfailed('Index unique violation found on blacklisted tables.');
+        #        }
+        #        else
+        #        {
+        #            if(!whiteListOnly)
+        #            {
+        #                ret = (Box::yesNo("Can not merge key until index unique violation has been resolved." +
+        #                              "To proceed, please backup the records from violated tables. " +
+        #                              "If you proceed, the violating records will be delted from the destination table.  Continue?",
+        #                              DialogButton::No,
+        #                              "Delete records the violate index unique constraints") == DialogButton::Yes);
+        #            }
+        #        }
+        #    }
+        #
+        #    return ret;
+        #}
+      ENDSOURCE
+      SOURCE #classDeclaration
+        #class CeMergeKey extends runBaseBatch
+        #{
+        #    ExtendedTypeId  extTypeId;
+        #    FieldId         fieldId;
+        #    int             dialogTypeId;
+        #    Common          common;
+        #    AnyType         fromValue, toValue;
+        #    boolean         blacklist, whiteListOnly;
+        #
+        #    DialogField     dlgFromValue, dlgToValue;
+        #}
+      ENDSOURCE
+      SOURCE #dialog
+        #public Object dialog()
+        #{
+        #    DialogRunbase   dialog = super();
+        #    ;
+        #
+        #    dialog.caption("Merge keys");
+        #    dialog.AddGroup("Merge keys");
+        #
+        #    dlgFromValue    = dialog.addFieldValue(dialogTypeId,fromValue,"@SYS30253");
+        #    dlgToValue      = dialog.addFieldValue(dialogTypeId,fromValue,"@SYS30254");
+        #
+        #    dlgFromValue.enabled(false);
+        #
+        #    return dialog;
+        #}
+        #
+      ENDSOURCE
+      SOURCE #getFromDialog
+        #boolean getFromDialog()
+        #{
+        #    ;
+        #    fromValue   = dlgFromValue.Value();
+        #    toValue     = dlgToValue.Value();
+        #
+        #    return super();
+        #}
+        #
+      ENDSOURCE
+      SOURCE #getTempValue
+        #public anytype getTempValue()
+        #{
+        #    DictType    dictType = new DictType(extTypeId);
+        #    anytype     ret;
+        #    ;
+        #
+        #    switch(dictType.baseType())
+        #    {
+        #        case Types::Date :
+        #        case Types::UtcDateTime :
+        #            ret = maxdate() - 99;
+        #            break;
+        #        case Types::Enum :
+        #            ret = 199;
+        #            break;
+        #        case Types::Int64 :
+        #        case Types::Integer :
+        #        case Types::Real :
+        #            ret = maxint() - 99;
+        #            break;
+        #        case Types::RString :
+        #        case Types::String :
+        #        case Types::VarString :
+        #            ret = substr('1q2w3e4r5t6y',1,min(dictType.stringLen(),12));
+        #            break;
+        #        default :
+        #            throw error(strfmt('Data type not supported',dictType.baseType()));
+        #    }
+        #
+        #    return ret;
+        #}
+      ENDSOURCE
+      SOURCE #initArgs
+        #void initArgs(Args _args)
+        #{
+        #    DictField   dictField;
+        #    ;
+        #
+        #    whiteListOnly = true;
+        #
+        #    if(_args && _args.record())
+        #    {
+        #        common  = _args.record();
+        #        if(this.validTable(common.TableId))
+        #        {
+        #            fieldId     = new DictTable(common.TableId).fieldName2Id(_args.parm());
+        #            dictField   = new DictField(common.TableId,fieldId);
+        #            this.parmExtTypeId(dictField.typeId());
+        #            this.parmFromValue(common.(fieldId));
+        #
+        #            dialogTypeId = this.parmExtTypeId();
+        #            dialogTypeId = dialogTypeId << 16;
+        #            this.parmDialogTypeId(dictField.type() | dialogTypeId);
+        #        }
+        #    }
+        #
+        #    if(!this.parmExtTypeId() || !this.parmFromValue())
+        #    {
+        #        throw error("@SYS80586");
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #pack
+        #public container pack()
+        #{
+        #    return connull();
+        #}
+        #
+      ENDSOURCE
+      SOURCE #parmDialogTypeId
+        #public int parmDialogTypeId(int _types = dialogTypeId)
+        #{
+        #    ;
+        #
+        #    dialogTypeId = _types;
+        #
+        #    return dialogTypeId;
+        #}
+      ENDSOURCE
+      SOURCE #parmExtTypeId
+        #public ExtendedTypeId parmExtTypeId(ExtendedTypeId _extTypeId = extTypeId)
+        #{
+        #    ;
+        #
+        #    extTypeId = _extTypeId;
+        #
+        #    return extTypeId;
+        #}
+      ENDSOURCE
+      SOURCE #parmFromValue
+        #public AnyType parmFromValue(AnyType _fromValue = fromValue)
+        #{
+        #    ;
+        #
+        #    fromValue = _fromValue;
+        #
+        #    return fromValue;
+        #}
+      ENDSOURCE
+      SOURCE #parmtoValue
+        #public AnyType parmtoValue(AnyType _toValue = toValue)
+        #{
+        #    ;
+        #
+        #    toValue = _toValue;
+        #
+        #    return toValue;
+        #}
+      ENDSOURCE
+      SOURCE #run
+        #void run()
+        #{
+        #    Boolean ok;
+        #    ;
+        #
+        #    try
+        #    {
+        #        ttsbegin;
+        #
+        #        if(!this.parmFromValue() || !this.parmToValue() || this.parmFromValue() == this.parmToValue())
+        #        {
+        #            throw error(strfmt('Illegal values, %1 -> %2',this.parmFromValue(), this.parmtoValue()));
+        #        }
+        #
+        #        ok = this.checkRemoveData(true);
+        #
+        #        if(ok)
+        #        {
+        #            ok = this.checkRemoveData(false);
+        #        }
+        #
+        #        if(ok)
+        #        {
+        #            this.runMerge();
+        #            Info("Key merge complete");
+        #        }
+        #        else
+        #        {
+        #            error("Key merge aborted");
+        #        }
+        #
+        #        ttscommit;
+        #    }
+        #    catch
+        #    {
+        #        error("Error occured merging keys");
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #runMerge
+        #void runMerge()
+        #{
+        #    Query                   query   = new Query();
+        #    QueryRun                queryRun;
+        #    QueryBuildDataSource    qbds;
+        #    Common                  common_Dest;
+        #    int                     intRnd;
+        #    str                     strRnd;
+        #    ;
+        #
+        #    qbds    = query.addDataSource(common.TableId);
+        #    qbds.addRange(fieldId).value(sysQuery::value(this.parmToValue()));
+        #
+        #
+        #    queryRun    = new QueryRun(query);
+        #    queryRun.next();
+        #    common_Dest = queryRun.getNo(1);
+        #    common.merge(common_dest);
+        #
+        #    /*
+        #    ttsbegin;
+        #
+        #    common_Dest.selectForUpdate(true);
+        #    common_Dest.(fieldId) = this.getTempValue();
+        #    common_Dest.doUpdate();
+        #
+        #    ttscommit;
+        #
+        #    CeRenamePrimaryKeyRemovalLog::insertLog(common);
+        #    common.(fieldId)    = this.parmtoValue();
+        #    common.renamePrimaryKey();
+        #
+        #    ttsbegin;
+        #
+        #    common.selectForUpdate(true);
+        #    common.doDelete();
+        #
+        #    common_Dest.(fieldId) = this.parmtoValue();
+        #    common_Dest.doUpdate();
+        #
+        #    ttscommit;
+        #    */
+        #}
+      ENDSOURCE
+      SOURCE #unpack
+        #public boolean unpack(container packedClass)
+        #{
+        #    return true;
+        #}
+        #
+      ENDSOURCE
+      SOURCE #validTable
+        #boolean validTable(TableId _tableId)
+        #{
+        #    boolean ret;
+        #    ;
+        #
+        #    switch(_tableId)
+        #    {
+        #        case tablenum(InventTable)  :
+        #        case tablenum(CustTable)    :
+        #            ret = true;
+        #            break;
+        #        default :
+        #            break;
+        #    }
+        #
+        #    return ret;
+        #}
+      ENDSOURCE
+      SOURCE #Construct
+        #public static CeMergeKey Construct()
+        #{
+        #    return new CeMergeKey();
+        #}
+      ENDSOURCE
+      SOURCE #main
+        #public static void Main(Args _args)
+        #{
+        #    CeMergeKey  rename = CeMergeKey::Construct();
+        #    ;
+        #
+        #    rename.initArgs(_Args);
+        #
+        #    if(rename.prompt())
+        #    {
+        #        rename.run();
+        #    }
+        #}
+      ENDSOURCE
+    ENDMETHODS
+  ENDCLASS
+
+
+***Element: FRM
+
+; Microsoft Dynamics AX Forms unloaded
+; --------------------------------------------------------------------------------
+FRMVERSION 5
+
+FORM #CeMergeKeyTableWhiteBlackList
+  PROPERTIES
+    Name                #CeMergeKeyTableWhiteBlackList
+  ENDPROPERTIES
+  
+  METHODS
+    Version: 3
+    SOURCE #classDeclaration
+      #public class FormRun extends ObjectRun
+      #{
+      #}
+    ENDSOURCE
+  ENDMETHODS
+  OBJECTBANK
+    PROPERTIES
+    ENDPROPERTIES
+    
+    DATASOURCE
+      OBJECTPOOL
+        PROPERTIES
+          Name                #CeMergeKeyTableWhiteBlackList
+          Table               #CeMergeKeyTableWhiteBlackList
+        ENDPROPERTIES
+        
+        FIELDLIST
+        ENDFIELDLIST
+      ENDOBJECTPOOL
+    ENDDATASOURCE
+  ENDOBJECTBANK
+  
+  JOINS
+  ENDJOINS
+  
+  DESIGN
+    PROPERTIES
+      Width               #Column width
+      Height              #Column height
+      Caption             #Black- and white listed tables
+      SaveSize            #Yes
+    ENDPROPERTIES
+    
+    CONTAINER
+      CONTROL TAB
+        PROPERTIES
+          Name                #Tab
+          Width               #Column width
+          Height              #Column height
+        ENDPROPERTIES
+        
+        CONTAINER
+          CONTROL TABPAGE
+            PROPERTIES
+              Name                #Overview
+              Width               #Column width
+              Height              #Column height
+              Caption             #@SYS81042
+            ENDPROPERTIES
+            
+            CONTAINER
+              CONTROL GRID
+                PROPERTIES
+                  Name                #Grid
+                  Width               #Column width
+                  Height              #Column height
+                  DataSource          #CeMergeKeyTableWhiteBlackList
+                  DataGroup           #Overview
+                  AutoDataGroup       #Yes
+                ENDPROPERTIES
+                
+                  CONTAINER
+                  ENDCONTAINER
+                  
+              ENDCONTROL 
+              
+            ENDCONTAINER
+            
+          ENDCONTROL 
+          
+          CONTROL TABPAGE
+            PROPERTIES
+              Name                #General
+              Width               #Column width
+              Height              #Column height
+              Caption             #@SYS35893
+            ENDPROPERTIES
+            
+            CONTAINER
+              CONTROL GROUP
+                PROPERTIES
+                  Name                #Group
+                  Width               #Column width
+                  Height              #Column height
+                  DataSource          #CeMergeKeyTableWhiteBlackList
+                  DataGroup           #General
+                  AutoDataGroup       #Yes
+                ENDPROPERTIES
+                
+                  CONTAINER
+                  ENDCONTAINER
+                  
+              ENDCONTROL 
+              
+            ENDCONTAINER
+            
+          ENDCONTROL 
+          
+        ENDCONTAINER
+        
+      ENDCONTROL 
+      
+    ENDCONTAINER
+    
+  ENDDESIGN
+  
+ENDFORM
+
+***Element: FTM
+
+; Microsoft Dynamics AX MENUITEM : CeMergeKey unloaded
+; --------------------------------------------------------------------------------
+  VERSION 1
+  
+  MENUITEM #CeMergeKey
+    Type: 3
+    PROPERTIES
+      Name                #CeMergeKey
+      Label               #Merge keys
+      ObjectType          #Class
+      Object              #CeMergeKey
+      SecurityKey         #AdminSetup
+    ENDPROPERTIES
+    
+  ENDMENUITEM
+  
+
+***Element: FTM
+
+; Microsoft Dynamics AX MENUITEM : CeMergeKeyTableWhiteBlackList unloaded
+; --------------------------------------------------------------------------------
+  VERSION 1
+  
+  MENUITEM #CeMergeKeyTableWhiteBlackList
+    Type: 1
+    PROPERTIES
+      Name                #CeMergeKeyTableWhiteBlackList
+      Label               #Black- and white listed tables
+      Object              #CeMergeKeyTableWhiteBlackList
+      SecurityKey         #AdminSetup
+    ENDPROPERTIES
+    
+  ENDMENUITEM
+  
+
+***Element: PRN
+
+; Microsoft Dynamics AX Project : VRB_RenamePrimaryKey unloaded
+; --------------------------------------------------------------------------------
+  PROJECTVERSION 2
+  
+  PROJECT #VRB_RenamePrimaryKey
+   SHARED
+  PROPERTIES
+    Name                #VRB_RenamePrimaryKey
+  ENDPROPERTIES
+  
+    PROJECTCLASS ProjectNode
+    GROUP #DataDictionary
+      PROPERTIES
+        Name                #DataDictionary
+        ProjectGroupType    #DataDictionary
+        GroupMask           #
+        PreventEditProperties #No
+      ENDPROPERTIES
+      
+      GROUP #Tables
+        PROPERTIES
+          Name                #Tables
+          ProjectGroupType    #Tables
+          GroupMask           #
+          PreventEditProperties #No
+        ENDPROPERTIES
+        
+        BEGINNODE
+          FILETYPE 0
+          UTILTYPE 44
+          UTILOBJECTID 40158
+          NODETYPE 204
+          NAME #CeMergeKeyTableWhiteBlackList
+        ENDNODE
+        BEGINNODE
+          FILETYPE 0
+          UTILTYPE 44
+          UTILOBJECTID 40157
+          NODETYPE 204
+          NAME #CeMergeKeyRemovalLog
+        ENDNODE
+        ENDGROUP
+        
+      GROUP #BaseEnums
+        PROPERTIES
+          Name                #BaseEnums
+          ProjectGroupType    #BaseEnums
+          GroupMask           #
+          PreventEditProperties #No
+        ENDPROPERTIES
+        
+        BEGINNODE
+          FILETYPE 0
+          UTILTYPE 40
+          UTILOBJECTID 40066
+          NODETYPE 209
+          NAME #WhiteBlackList
+        ENDNODE
+        ENDGROUP
+        
+      ENDGROUP
+      
+    GROUP #Classes
+      PROPERTIES
+        Name                #Classes
+        ProjectGroupType    #Classes
+        GroupMask           #
+        PreventEditProperties #No
+      ENDPROPERTIES
+      
+      BEGINNODE
+        FILETYPE 0
+        UTILTYPE 45
+        UTILOBJECTID 40127
+        NODETYPE 329
+        NAME #CeMergeKey
+      ENDNODE
+      ENDGROUP
+      
+    GROUP #Forms
+      PROPERTIES
+        Name                #Forms
+        ProjectGroupType    #Forms
+        GroupMask           #
+        PreventEditProperties #No
+      ENDPROPERTIES
+      
+      BEGINNODE
+        FILETYPE 0
+        UTILTYPE 11
+        UTILOBJECTID 0
+        NODETYPE 201
+        NAME #CeMergeKeyTableWhiteBlackList
+      ENDNODE
+      BEGINNODE
+        FILETYPE 0
+        UTILTYPE 11
+        UTILOBJECTID 0
+        NODETYPE 201
+        NAME #CustTableDisabled
+      ENDNODE
+      BEGINNODE
+        FILETYPE 0
+        UTILTYPE 11
+        UTILOBJECTID 0
+        NODETYPE 201
+        NAME #InventTable
+      ENDNODE
+      ENDGROUP
+      
+    GROUP #MenuItems
+      PROPERTIES
+        Name                #MenuItems
+        ProjectGroupType    #MenuItems
+        GroupMask           #
+        PreventEditProperties #No
+      ENDPROPERTIES
+      
+      GROUP #Action
+        PROPERTIES
+          Name                #Action
+          ProjectGroupType    #Action
+          GroupMask           #
+          PreventEditProperties #No
+        ENDPROPERTIES
+        
+        BEGINNODE
+          FILETYPE 0
+          UTILTYPE 3
+          UTILOBJECTID 0
+          NODETYPE 296
+          NAME #CeMergeKey
+        ENDNODE
+        ENDGROUP
+        
+      GROUP #Display
+        PROPERTIES
+          Name                #Display
+          ProjectGroupType    #Display
+          GroupMask           #
+          PreventEditProperties #No
+        ENDPROPERTIES
+        
+        BEGINNODE
+          FILETYPE 0
+          UTILTYPE 1
+          UTILOBJECTID 0
+          NODETYPE 296
+          NAME #CeMergeKeyTableWhiteBlackList
+        ENDNODE
+        ENDGROUP
+        
+      ENDGROUP
+      
+  ENDPROJECT
+  
+
+***Element: END
